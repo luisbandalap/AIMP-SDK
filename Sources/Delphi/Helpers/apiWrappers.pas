@@ -284,7 +284,7 @@ end;
 
 function CoreGetService(const IID: TGUID; out Obj): LongBool;
 begin
-  Result := Succeeded(FCore.QueryInterface(IID, Obj));
+  Result := (FCore <> nil) and Succeeded(FCore.QueryInterface(IID, Obj));
 end;
 
 function CoreIntf: IAIMPCore;

@@ -69,7 +69,7 @@ type
   IAIMPLyrics = interface(IAIMPPropertyList)
   [SID_IAIMPLyrics]
     function Assign(Source: IAIMPLyrics): HRESULT; stdcall;
-	function Clone(out Target: IAIMPLyrics): HRESULT; stdcall;
+	  function Clone(out Target: IAIMPLyrics): HRESULT; stdcall;
     //
     function Add(TimeStart, TimeFinish: Integer; Text: IAIMPString): HRESULT; stdcall;
     function Delete(Index: Integer): HRESULT; stdcall;

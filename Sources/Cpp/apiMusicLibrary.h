@@ -62,6 +62,7 @@ const int AIMPML_DATASTORAGE_CAP_FILTERING       = 1; // return it, if plugin ha
 const int AIMPML_DATASTORAGE_CAP_PREIMAGES       = 2;
 const int AIMPML_DATASTORAGE_CAP_GROUPINGPRESETS = 4;
 const int AIMPML_DATASTORAGE_CAP_CUSTOMIZEGROUPS = 8;
+const int AIMPML_DATASTORAGE_CAP_AUTOEXPANDFILES = 16;
 
 // Schema Flags for IAIMPMLExtensionDataStorage.GetFields
 const int AIMPML_FIELDS_SCHEMA_ALL                        = 0;
