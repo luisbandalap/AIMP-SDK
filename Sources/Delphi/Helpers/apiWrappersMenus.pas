@@ -70,6 +70,14 @@ type
     procedure Register(const ID: UnicodeString; const ParentID: Variant);
   end;
 
+  { TAIMPUILineMenuItem }
+
+  TAIMPUILineMenuItem = class(TAIMPUICustomMenuItem)
+  protected
+    procedure OnExecute(Sender: IInterface); override; stdcall;
+    procedure UpdateState(AMenuItem: IAIMPMenuItem); override;
+  end;
+
   { TAIMPUICustomMenuItemController }
 
   TAIMPUICustomMenuItemController = class abstract(TInterfacedObject,
@@ -308,6 +316,19 @@ begin
   AState := GetState;
   PropListSetInt32(AMenuItem, AIMP_MENUITEM_PROPID_ENABLED, Ord(isEnabled in AState));
   PropListSetInt32(AMenuItem, AIMP_MENUITEM_PROPID_VISIBLE, Ord(isVisible in AState));
+end;
+
+{ TAIMPUILineMenuItem }
+
+procedure TAIMPUILineMenuItem.OnExecute(Sender: IInterface);
+begin
+  // do nothing
+end;
+
+procedure TAIMPUILineMenuItem.UpdateState(AMenuItem: IAIMPMenuItem);
+begin
+  inherited;
+  PropListSetStr(AMenuItem, AIMP_MENUITEM_PROPID_NAME, '-');
 end;
 
 { TAIMPUICustomMenuItemController }
