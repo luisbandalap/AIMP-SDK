@@ -1,10 +1,10 @@
 {************************************************}
 {*                                              *}
 {*          AIMP Programming Interface          *}
-{*               v4.50 build 2000               *}
+{*               v4.60 build 2100               *}
 {*                                              *}
 {*                Artem Izmaylov                *}
-{*                (C) 2006-2017                 *}
+{*                (C) 2006-2019                 *}
 {*                 www.aimp.ru                  *}
 {*                                              *}
 {*            Mail: support@aimp.ru             *}
@@ -110,6 +110,9 @@ const
 
   SID_IAIMPUIFormEvents2 = '{61756946-6F72-6D45-7665-6E7473320000}';
   IID_IAIMPUIFormEvents2: TGUID = SID_IAIMPUIFormEvents2;
+
+  SID_IAIMPUIFormEvents3 = '{61756946-6F72-6D45-7665-6E7473330000}';
+  IID_IAIMPUIFormEvents3: TGUID = SID_IAIMPUIFormEvents3;
 
   SID_IAIMPUISpinEdit = '{61756953-7069-6E45-6469-740000000000}';
   IID_IAIMPUISpinEdit: TGUID = SID_IAIMPUISpinEdit;
@@ -229,6 +232,9 @@ const
 //----------------------------------------------------------------------------------------------------------------------
 // Flags
 //----------------------------------------------------------------------------------------------------------------------
+
+  AIMPUI_STYLE_LIGHT      = 0;
+  AIMPUI_STYLE_DARK       = 1;
 
   // Modifiers Flags
   AIMPUI_FLAGS_MOD_ALT    = 1;
@@ -551,6 +557,7 @@ const
   AIMPUI_FORM_PROPID_ICON          = AIMPUI_WINCONTROL_MAX_PROPID + 5;
   AIMPUI_FORM_PROPID_PADDING       = AIMPUI_WINCONTROL_MAX_PROPID + 6;
   AIMPUI_FORM_PROPID_SHOWONTASKBAR = AIMPUI_WINCONTROL_MAX_PROPID + 7;
+  AIMPUI_FORM_PROPID_STYLE         = AIMPUI_WINCONTROL_MAX_PROPID + 8;
 
   // PropID for IAIMPUIProgressDialog
   AIMPUI_PROGRESSDLG_PROPID_CAPTION                  = 1;
@@ -1173,6 +1180,13 @@ type
   IAIMPUIFormEvents2 = interface
   [SID_IAIMPUIFormEvents2]
     procedure OnChangeScale(Sender: IAIMPUIForm; Multiplier, Divider: Integer); stdcall;
+  end;
+
+  { IAIMPUIFormEvents3 }
+
+  IAIMPUIFormEvents3 = interface
+  [SID_IAIMPUIFormEvents3]
+    procedure OnStyleChanged(Sender: IAIMPUIForm; Style: Integer); stdcall;
   end;
 
 //----------------------------------------------------------------------------------------------------------------------

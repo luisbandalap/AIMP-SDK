@@ -1,10 +1,10 @@
 /************************************************/
 /*                                              */
 /*          AIMP Programming Interface          */
-/*               v4.50 build 2000               */
+/*               v4.60 build 2160               */
 /*                                              */
 /*                Artem Izmaylov                */
-/*                (C) 2006-2017                 */
+/*                (C) 2006-2019                 */
 /*                 www.aimp.ru                  */
 /*                                              */
 /*            Mail: support@aimp.ru             */
@@ -31,7 +31,7 @@ static const GUID IID_IAIMPExtensionPlaylistManagerListener = {0x41494D50, 0x457
 static const GUID IID_IAIMPServicePlaylistManager = {0x41494D50, 0x5372, 0x7650, 0x6C, 0x73, 0x4D, 0x61, 0x6E, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPServicePlaylistManager2 = {0x41494D50, 0x536D, 0x504C, 0x4D, 0x6E, 0x67, 0x72, 0x32, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPPlaylistPreimageFolders = {0x41494D50, 0x536D, 0x504C, 0x53, 0x72, 0x63, 0x46, 0x6C, 0x64, 0x72, 0x73};
-static const GUID IID_IAIMPPlaylistPreimageDataProvider = {0x41494D50, 0x536D, 0x506C, 0x73, 0x44, 0x61, 0x74, 0x61, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPPlaylistPreimageDataProvider = {0x41494D50, 0x536D, 0x506C, 0x73, 0x44, 0x61, 0x74, 0x61, 0x50, 0x72, 0x76};
 static const GUID IID_IAIMPPlaylistPreimageListener = {0x41494D50, 0x536D, 0x504C, 0x4D, 0x6E, 0x67, 0x72, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPPlaylistPreimage = {0x41494D50, 0x536D, 0x504C, 0x53, 0x72, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPExtensionPlaylistPreimageFactory = {0x41494D50, 0x4578, 0x7453, 0x6D, 0x50, 0x6C, 0x73, 0x46, 0x63, 0x74, 0x00};

@@ -1,10 +1,10 @@
 /************************************************/
 /*                                              */
 /*          AIMP Programming Interface          */
-/*               v4.50 build 2000               */
+/*               v4.60 build 2160               */
 /*                                              */
 /*                Artem Izmaylov                */
-/*                (C) 2006-2017                 */
+/*                (C) 2006-2019                 */
 /*                 www.aimp.ru                  */
 /*                                              */
 /*            Mail: support@aimp.ru             */
@@ -21,15 +21,18 @@
 #include "apiPlaylists.h"
 
 static const GUID IID_IAIMPServiceMusicLibraryUI = {0x41494D50, 0x5372, 0x764D, 0x4C, 0x55, 0x49, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const GUID IID_IAIMPMLPlaylistPreimage = {0x414D4C53, 0x6D50, 0x6C73, 0x53, 0x72, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const GUID IID_IAIMPMLFileList = {0x41494D50, 0x4D4C, 0x4669, 0x6C, 0x65, 0x4C, 0x69, 0x73, 0x74, 0x00, 0x00};
+static const GUID IID_IAIMPMLAlbumArtProvider = {0x41494D50, 0x4D4C, 0x416C, 0x62, 0x41, 0x72, 0x74, 0x50, 0x72, 0x76, 0x00};
 static const GUID IID_IAIMPMLDataField = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x46, 0x6C, 0x64, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPMLDataFieldDisplayValue = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x46, 0x6C, 0x64, 0x44, 0x56, 0x6C};
 static const GUID IID_IAIMPMLDataFieldFilter = {0x41494D50, 0x4D4C, 0x466C, 0x64, 0x46, 0x6C, 0x74, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataFieldFilterByArray = {0x41494D50, 0x4D4C, 0x466C, 0x64, 0x46, 0x6C, 0x74, 0x41, 0x72, 0x72, 0x00};
 static const GUID IID_IAIMPMLDataFilter = {0x41494D50, 0x4D4C, 0x4669, 0x6C, 0x74, 0x65, 0x72, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataFilterGroup = {0x41494D50, 0x4D4C, 0x466C, 0x74, 0x47, 0x72, 0x70, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataProvider = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x50, 0x72, 0x76, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPMLDataProvider2 = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x50, 0x72, 0x76, 0x32, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataProviderSelection = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x50, 0x72, 0x76, 0x53, 0x65, 0x6C};
+static const GUID IID_IAIMPMLDataStorage = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x53, 0x74, 0x67, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPMLDataStorage2 = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x53, 0x74, 0x67, 0x32, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataStorageCommandAddFiles = {0x41494D50, 0x4D4C, 0x4453, 0x43, 0x6D, 0x64, 0x41, 0x64, 0x64, 0x00, 0x00};
 static const GUID IID_IAIMPMLDataStorageCommandAddFilesDialog = {0x41494D50, 0x4D4C, 0x4453, 0x43, 0x6D, 0x64, 0x41, 0x64, 0x64, 0x44, 0x00};
 static const GUID IID_IAIMPMLDataStorageCommandDeleteFiles = {0x41494D50, 0x4D4C, 0x4453, 0x43, 0x6D, 0x64, 0x44, 0x65, 0x6C, 0x00, 0x00};
@@ -40,16 +43,16 @@ static const GUID IID_IAIMPMLDataStorageCommandReportDialog = {0x41494D50, 0x4D4
 static const GUID IID_IAIMPMLDataStorageCommandUserMark = {0x41494D50, 0x4D4C, 0x4453, 0x43, 0x6D, 0x64, 0x4D, 0x61, 0x72, 0x6B, 0x00};
 static const GUID IID_IAIMPMLDataStorageManager = {0x41494D50, 0x4D4C, 0x4453, 0x4D, 0x6E, 0x67, 0x72, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLExtensionDataStorage = {0x41494D50, 0x4578, 0x744D, 0x4C, 0x44, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const GUID IID_IAIMPServiceMusicLibrary = {0x41494D50, 0x5372, 0x764D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-static const GUID IID_IAIMPMLDataStorage = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x53, 0x74, 0x67, 0x00, 0x00, 0x00};
-static const GUID IID_IAIMPMLDataFieldDisplayValue = {0x41494D50, 0x4D4C, 0x4461, 0x74, 0x61, 0x46, 0x6C, 0x64, 0x44, 0x56, 0x6C};
-static const GUID IID_IAIMPMLGroupingTreeSelection = {0x41494D50, 0x4D4C, 0x4770, 0x54, 0x72, 0x65, 0x65, 0x53, 0x65, 0x6C, 0x00};
+static const GUID IID_IAIMPMLFileList = {0x41494D50, 0x4D4C, 0x4669, 0x6C, 0x65, 0x4C, 0x69, 0x73, 0x74, 0x00, 0x00};
 static const GUID IID_IAIMPMLGroupingPreset = {0x41494D50, 0x4D4C, 0x4772, 0x70, 0x50, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPMLGroupingPresets = {0x41494D50, 0x4D4C, 0x4772, 0x50, 0x72, 0x73, 0x74, 0x73, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLGroupingPresetStandard = {0x41494D50, 0x4D4C, 0x4772, 0x70, 0x50, 0x73, 0x74, 0x53, 0x74, 0x64, 0x00};
 static const GUID IID_IAIMPMLGroupingTreeDataProvider = {0x41494D50, 0x4D4C, 0x4772, 0x70, 0x44, 0x61, 0x74, 0x61, 0x50, 0x72, 0x76};
 static const GUID IID_IAIMPMLGroupingTreeDataProviderSelection = {0x41494D50, 0x4D4C, 0x4772, 0x44, 0x74, 0x50, 0x72, 0x76, 0x53, 0x65, 0x6C};
-static const GUID IID_IAIMPMLGroupingPresets = {0x41494D50, 0x4D4C, 0x4772, 0x50, 0x72, 0x73, 0x74, 0x73, 0x00, 0x00, 0x00};
+static const GUID IID_IAIMPMLGroupingTreeSelection = {0x41494D50, 0x4D4C, 0x4770, 0x54, 0x72, 0x65, 0x65, 0x53, 0x65, 0x6C, 0x00};
+static const GUID IID_IAIMPMLPlaylistPreimage = {0x414D4C53, 0x6D50, 0x6C73, 0x53, 0x72, 0x63, 0x00, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPMLSortDirection = {0x41494D50, 0x4D4C, 0x536F, 0x72, 0x74, 0x44, 0x69, 0x72, 0x74, 0x6E, 0x00};
+static const GUID IID_IAIMPServiceMusicLibrary = {0x41494D50, 0x5372, 0x764D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 // Property ID for IAIMPPropertyList of IAIMPMLExtensionDataStorage
 const int AIMPML_DATASTORAGE_PROPID_ID              = 0;
@@ -63,6 +66,7 @@ const int AIMPML_DATASTORAGE_CAP_PREIMAGES       = 2;
 const int AIMPML_DATASTORAGE_CAP_GROUPINGPRESETS = 4;
 const int AIMPML_DATASTORAGE_CAP_CUSTOMIZEGROUPS = 8;
 const int AIMPML_DATASTORAGE_CAP_AUTOEXPANDFILES = 16;
+const int AIMPML_DATASTORAGE_CAP_NOBOOKMARKS	 = 32;
 
 // Schema Flags for IAIMPMLExtensionDataStorage.GetFields
 const int AIMPML_FIELDS_SCHEMA_ALL                        = 0;
@@ -155,12 +159,12 @@ const int AIMPML_FILTERGROUP_OPERATION_NOTAND = 3;
 const int AIMPML_FIELDFILTERBYARRAY_FIELD = 1;
 
 // Property ID for IAIMPMLDataFilter
-const int AIMPML_FILTER_LIMIT           = 1;
-const int AIMPML_FILTER_OFFSET          = 2;
-const int AIMPML_FILTER_SORTBY          = 3;
-const int AIMPML_FILTER_SORTDIRECTION   = 4; // Refer to the AIMPML_SORTDIRECTION_XXX
-const int AIMPML_FILTER_SEARCHSTRING    = 10; // optional
-const int AIMPML_FILTER_ALPHABETICINDEX = 11; // optional
+const int AIMPML_FILTER_LIMIT           = 11;
+const int AIMPML_FILTER_OFFSET          = 12;
+const int AIMPML_FILTER_SORTBY          = 13;
+const int AIMPML_FILTER_SORTDIRECTION   = 14; // Refer to the AIMPML_SORTDIRECTION_XXX
+const int AIMPML_FILTER_SEARCHSTRING    = 20; // optional
+const int AIMPML_FILTER_ALPHABETICINDEX = 21; // optional
 
 // Sort Direction
 const int AIMPML_SORTDIRECTION_ASCENDING  = 1;
@@ -178,6 +182,44 @@ const int AIMPML_GROUPINGTREENODE_FLAG_STANDALONE  = 2;
 const int AIMPML_GETFILES_FLAGS_ALL      = 0;
 const int AIMPML_GETFILES_FLAGS_SELECTED = 1;
 const int AIMPML_GETFILES_FLAGS_FOCUSED  = 2;
+
+// LocalDataStorage
+static const WCHAR* AIMPML_LOCALDATASTORAGE_ID = _T("TAIMPMLLocalDataStorage");
+
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_ID = _T("ID"); // Int32
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_ADDDED = _T("Added"); // DateTime (Float);
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_ALBUM = _T("Album"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_ALBUMARTIST = _T("AlbumArtist"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_ARTIST = _T("Artist"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_BITDEPTH = _T("BitDepth"); // Int32;
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_BITRATE = _T("Bitrate"); // Int32
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_BPM = _T("BPM"); // Int32;
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_CHANNELS = _T("Channels"); // Int32;
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_COMMENT = _T("Comment"); // String (Memo)
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_COMPOSER = _T("Composer"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_CONDUCTOR = _T("Conductor"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_COPYRIGHTS = _T("Copyrights"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_DISKNUMBER = _T("DiskNumber"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_DURATION = _T("Duration"); // = AIMPML_RESERVED_FIELD_DURATION; // Duration (Float)
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_FILEFORMAT = _T("FileFormat"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_FILENAME = _T("FileName"); // = AIMPML_RESERVED_FIELD_FILENAME; // FileName (String);
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_FILESIZE =_T("FileSize"); // = AIMPML_RESERVED_FIELD_FILESIZE; // FileSize (Int64);
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_GENRE = _T("Genre"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_LABELS = _T("Labels"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_LASTMODIFICATION = _T("LastModification"); // DateTime (Float)
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_LASTPLAYBACK = _T("LastPlayback"); // DateTime (Float);
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_LYRICIST = _T("Lyricist"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_MOOD = _T("Mood"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_PLAYBACKCOUNT = _T("PlaybackCount"); // Int32
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_PUBLISHER = _T("Publisher"); // String, multiple values
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_RATING = _T("Rating"); // Int32
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_SAMPLERATE = _T("SampleRate"); // Int32
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_TITLE = _T("Title"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_TRACKNUMBER = _T("TrackNumber"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_URL = _T("URL"); // String
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_USERMARK = _T("UserMark"); // = AIMPML_RESERVED_FIELD_USERMARK;
+static const WCHAR* AIMPML_LOCALDATASTORAGE_FIELD_YEAR = _T("Year"); // String
+
 
 //----------------------------------------------------------------------------------------------------------------------
 // Common Classes
@@ -248,7 +290,7 @@ class IAIMPMLFileList : public IUnknown
 		virtual int WINAPI GetCount() = 0;
 		virtual HRESULT WINAPI GetFileName(int Index, IAIMPString** FileName) = 0;
 		virtual HRESULT WINAPI SetFileName(int Index, IAIMPString* FileName) = 0;
-		virtual HRESULT WINAPI GetID(int Index, VARIANT** ID) = 0;
+		virtual HRESULT WINAPI GetID(int Index, VARIANT* ID) = 0;
 		virtual HRESULT WINAPI SetID(int Index, VARIANT* ID) = 0;
 
 		virtual HRESULT WINAPI Clone(void** Obj) = 0;
@@ -347,12 +389,33 @@ class IAIMPMLPlaylistPreimage : public IAIMPPlaylistPreimage
 // Data Providers
 //----------------------------------------------------------------------------------------------------------------------
 
+/* IAIMPMLAlbumArtProvider */
+
+class IAIMPMLAlbumArtProvider : public IUnknown
+{
+	public:
+		virtual HRESULT WINAPI Get(IAIMPObjectList* Fields, VARIANT* Values, IAIMPPropertyList* Options, IAIMPImageContainer** Image) = 0;
+};
+
 /* IAIMPMLDataProvider */
 
 class IAIMPMLDataProvider : public IUnknown
 {
 	public:
 		virtual HRESULT WINAPI GetData(IAIMPObjectList* Fields, IAIMPMLDataFilter* Filter, IUnknown** Data) = 0;
+};
+
+/* IAIMPMLDataProvider2 */
+
+class IAIMPMLDataProvider2 : public IUnknown
+{
+	public:
+		virtual HRESULT WINAPI GetData(
+					 IAIMPObjectList* Fields,
+					 IAIMPMLDataFilter* Filter,
+					 IUnknown* Reserved,
+		 /*in /out*/ IUnknown** PageID,
+					 IUnknown** Data) = 0;
 };
 
 /* IAIMPMLDataProviderSelection */
@@ -365,7 +428,8 @@ class IAIMPMLDataProviderSelection : public IUnknown
 		virtual INT64 WINAPI GetValueAsInt64(int FieldIndex) = 0;
 		virtual WCHAR* WINAPI GetValueAsString(int FieldIndex, int* Length) = 0;
 		virtual BOOL WINAPI NextRow() = 0;
-		virtual BOOL WINAPI HasNextPage() = 0;
+		// Deprecated, use IAIMPMLDataProvider2 instead
+		// virtual BOOL WINAPI HasNextPage() = 0;
 };
 
 /* IAIMPMLGroupingTreeSelection */
@@ -374,7 +438,7 @@ class IAIMPMLGroupingTreeSelection : public IUnknown
 {
 	public:
 		virtual int WINAPI GetCount() = 0;
-		virtual HRESULT WINAPI GetValue(int Index, IAIMPString** FieldName, VARIANT** Value) = 0;
+		virtual HRESULT WINAPI GetValue(int Index, IAIMPString** FieldName, VARIANT* Value) = 0;
 };
 
 /* IAIMPMLGroupingTreeDataProviderSelection */
@@ -385,7 +449,7 @@ class IAIMPMLGroupingTreeDataProviderSelection : public IUnknown
 		virtual HRESULT WINAPI GetDisplayValue(IAIMPString** S) = 0;
 		virtual DWORD WINAPI GetFlags() = 0;
 		virtual HRESULT WINAPI GetImageIndex(int* Index) = 0;
-		virtual HRESULT WINAPI GetValue(IAIMPString** FieldName, VARIANT** Value) = 0;
+		virtual HRESULT WINAPI GetValue(IAIMPString** FieldName, VARIANT* Value) = 0;
 		virtual BOOL WINAPI NextRow() = 0;
 };
 
@@ -452,6 +516,14 @@ class IAIMPMLDataStorageManager : public IUnknown
 
 class IAIMPMLDataStorage : public IAIMPPropertyList // + IAIMPMLGroupingPresets
 {
+};
+
+/* IAIMPMLDataStorage2 */
+
+class IAIMPMLDataStorage2 : public IAIMPMLDataStorage // + IAIMPMLDataProvider, IAIMPMLDataProvider2
+{
+	public:
+		virtual HRESULT WINAPI CreateObject(REFIID IID, void **Obj) = 0;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

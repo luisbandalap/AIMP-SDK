@@ -23,7 +23,7 @@ type
 
   { TAIMPCustomPlugin }
 
-  TAIMPCustomPlugin = class(TInterfacedObject, IAIMPPlugin)
+  TAIMPCustomPlugin = class(TInterfacedObjectEx, IAIMPPlugin)
   protected
     // IAIMPPlugin
     function InfoGet(Index: Integer): PWideChar; virtual; stdcall; abstract;

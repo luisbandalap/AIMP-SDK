@@ -1,10 +1,10 @@
 {************************************************}
 {*                                              *}
 {*          AIMP Programming Interface          *}
-{*               v4.50 build 2000               *}
+{*               v4.60 build 2160               *}
 {*                                              *}
 {*                Artem Izmaylov                *}
-{*                (C) 2006-2017                 *}
+{*                (C) 2006-2019                 *}
 {*                 www.aimp.ru                  *}
 {*            Mail: support@aimp.ru             *}
 {*                                              *}
@@ -20,24 +20,21 @@ uses
   Windows;
 
 const
-  SID_IAIMPTask = '{41494D50-5461-736B-0000-000000000000}';
+  SID_IAIMPTask = '{41494D50-5461-736B-3200-000000000000}';
   IID_IAIMPTask: TGUID = SID_IAIMPTask;
 
-  SID_IAIMPTaskOwner = '{41494D50-5461-736B-4F77-6E6572000000}';
+  SID_IAIMPTaskOwner = '{41494D50-5461-736B-4F77-6E6572320000}';
   IID_IAIMPTaskOwner: TGUID = SID_IAIMPTaskOwner;
   
   SID_IAIMPTaskPriority = '{41494D50-5461-736B-5072-696F72697479}';
   IID_IAIMPTaskPriority: TGUID = SID_IAIMPTaskPriority;
 
-  SID_IAIMPServiceSynchronizer = '{41494D50-5372-7653-796E-637200000000}';
-  IID_IAIMPServiceSynchronizer: TGUID = SID_IAIMPServiceSynchronizer;
+  SID_IAIMPServiceThreads = '{41494D50-5372-7654-6872-656164730000}';
+  IID_IAIMPServiceThreads: TGUID = SID_IAIMPServiceThreads;
 
-  SID_IAIMPServiceThreadPool = '{41494D50-5372-7654-6872-64506F6F6C00}';
-  IID_IAIMPServiceThreadPool: TGUID = SID_IAIMPServiceThreadPool;
+  // Flags for IAIMPServiceThreads.Cancel and ExecuteInMainThread
+  AIMP_SERVICE_THREADS_FLAGS_WAITFOR = $1;
 
-  // Flags for IAIMPServiceThreadPool.Cancel
-  AIMP_SERVICE_THREADPOOL_FLAGS_WAITFOR = $1;
-  
   // IAIMPTaskPriority.GetPriority
   AIMP_TASK_PRIORITY_NORMAL = 0;
   AIMP_TASK_PRIORITY_LOW    = 1;
@@ -64,22 +61,16 @@ type
 
   IAIMPTaskOwner = interface(IUnknown)
   [SID_IAIMPTaskOwner]
-    function IsCanceled: LongBool;
+    function IsCanceled: LongBool; stdcall;
   end;
 
-  { IAIMPServiceSynchronizer }
+  { IAIMPServiceThreads }
 
-  IAIMPServiceSynchronizer = interface(IUnknown)
-  [SID_IAIMPServiceSynchronizer]
-    function ExecuteInMainThread(Task: IAIMPTask; ExecuteNow: LongBool): HRESULT; stdcall;
-  end;
-
-  { IAIMPServiceThreadPool }
-
-  IAIMPServiceThreadPool = interface(IUnknown)
-  [SID_IAIMPServiceThreadPool]
+  IAIMPServiceThreads = interface(IUnknown)
+  [SID_IAIMPServiceThreads]
+    function ExecuteInMainThread(Task: IAIMPTask; Flags: DWORD): HRESULT; stdcall;
+    function ExecuteInThread(Task: IAIMPTask; out TaskHandle: THandle): HRESULT; stdcall;
     function Cancel(TaskHandle: THandle; Flags: DWORD): HRESULT; stdcall;
-    function Execute(Task: IAIMPTask; out TaskHandle: THandle): HRESULT; stdcall;
     function WaitFor(TaskHandle: THandle): HRESULT; stdcall;
   end;
 

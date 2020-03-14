@@ -45,7 +45,9 @@ type
     // IAIMPOptionsDialogFrameKeyboardHelper2
     function SelectLastControl: LongBool; stdcall;
   protected
-    function CreateForm(ParentWnd: HWND): TForm; virtual; abstract;
+    // ParentControl must be used instead of ParentWnd if it is assigned
+    // ParentControl is assigned if plugin was built with AIMP.RunTime.dll
+    function CreateForm(ParentWnd: HWND; ParentControl: TWinControl): TForm; virtual; abstract;
     function GetName(out S: IAIMPString): HRESULT; overload; virtual; stdcall;
     function GetName: UnicodeString; overload; virtual;
     procedure Notification(ID: Integer); virtual; stdcall;
@@ -173,7 +175,7 @@ function TAIMPCustomOptionsFrame.CreateFrame(ParentWnd: HWND): HWND;
 var
   R: Trect;
 begin
-  FForm := CreateForm(ParentWnd);
+  FForm := CreateForm(ParentWnd, FindControl(ParentWnd));
   FForm.Visible := True; // before BoundsRect initialization
   GetWindowRect(ParentWnd, R);
   OffsetRect(R, -R.Left, -R.Top);

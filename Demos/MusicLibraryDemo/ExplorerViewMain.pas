@@ -60,7 +60,6 @@ type
     function GetValueAsInt64(AFieldIndex: Integer): Int64; virtual; stdcall;
     function GetValueAsString(AFieldIndex: Integer; out ALength: Integer): PWideChar; overload; stdcall;
     function GetValueAsString(AFieldIndex: Integer): UnicodeString; overload; virtual; abstract;
-    function HasNextPage: LongBool; virtual; stdcall;
     function NextRow: LongBool; virtual; stdcall; abstract;
   end;
 
@@ -100,8 +99,7 @@ type
 
   { TDemoExplorerViewDataProviderSelection }
 
-  TDemoExplorerViewDataProviderSelection = class(TDemoExplorerViewCustomDataProviderSelection,
-    IAIMPMLDataProviderSelection)
+  TDemoExplorerViewDataProviderSelection = class(TDemoExplorerViewCustomDataProviderSelection)
   strict private
     FAudioExts: UnicodeString;
     FFieldFileAccessTime: Integer;

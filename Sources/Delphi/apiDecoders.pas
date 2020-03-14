@@ -26,11 +26,20 @@ const
   SID_IAIMPAudioDecoderBufferingProgress = '{41494D50-4175-6469-6F44-656342756666}';
   IID_IAIMPAudioDecoderBufferingProgress: TGUID = SID_IAIMPAudioDecoderBufferingProgress;
 
+  SID_IAIMPAudioDecoderListener = '{41494D50-4175-6469-6F44-65634C737400}';
+  IID_IAIMPAudioDecoderListener: TGUID = SID_IAIMPAudioDecoderListener;
+
+  SID_IAIMPAudioDecoderNotifications = '{41494D50-4175-6469-6F44-65634E746679}';
+  IID_IAIMPAudioDecoderNotifications: TGUID = SID_IAIMPAudioDecoderNotifications;
+
   SID_IAIMPExtensionAudioDecoder = '{41494D50-4578-7441-7564-696F44656300}';
   IID_IAIMPExtensionAudioDecoder: TGUID = SID_IAIMPExtensionAudioDecoder;
 
   SID_IAIMPExtensionAudioDecoderOld = '{41494D50-4578-7441-7564-696F4465634F}';
   IID_IAIMPExtensionAudioDecoderOld: TGUID = SID_IAIMPExtensionAudioDecoderOld;
+
+  SID_IAIMPExtensionAudioDecoderPriority = '{41494D50-4578-7444-6563-5072696F7200}';
+  IID_IAIMPExtensionAudioDecoderPriority: TGUID = SID_IAIMPExtensionAudioDecoderPriority;
 
   SID_IAIMPServiceAudioDecoders = '{41494D50-5372-7641-7564-696F44656300}';
   IID_IAIMPServiceAudioDecoders: TGUID = SID_IAIMPServiceAudioDecoders;
@@ -44,6 +53,9 @@ const
 
   // Flags for IAIMPExtensionAudioDecoder / IAIMPExtensionAudioDecoderOld
   AIMP_DECODER_FLAGS_FORCE_CREATE_INSTANCE = $1000;
+
+  // Flags for IAIMPAudioDecoderListener.Changed
+  AIMP_DECODER_CHANGE_INPUTFORMAT = 1;
 
 type
 
@@ -72,6 +84,21 @@ type
     function Get(out Value: Double): LongBool; stdcall;
   end;
 
+  { IAIMPAudioDecoderListener }
+
+  IAIMPAudioDecoderListener = interface
+  [SID_IAIMPAudioDecoderListener]
+    procedure Changed(Changes: Integer);
+  end;
+
+  { IAIMPAudioDecoderNotifications }
+
+  IAIMPAudioDecoderNotifications = interface
+  [SID_IAIMPAudioDecoderNotifications]
+    procedure ListenerAdd(Listener: IAIMPAudioDecoderListener); stdcall;
+    procedure ListenerRemove(Listener: IAIMPAudioDecoderListener); stdcall;
+  end;
+
   { IAIMPExtensionAudioDecoder }
 
   IAIMPExtensionAudioDecoder = interface(IUnknown)
@@ -86,6 +113,13 @@ type
   [SID_IAIMPExtensionAudioDecoderOld]
     function CreateDecoder(FileName: IAIMPString; Flags: DWORD;
       ErrorInfo: IAIMPErrorInfo; out Decoder: IAIMPAudioDecoder): HRESULT; stdcall;
+  end;
+
+  { IAIMPExtensionAudioDecoderPriority }
+
+  IAIMPExtensionAudioDecoderPriority = interface(IUnknown)
+  [SID_IAIMPExtensionAudioDecoderPriority]
+    function GetPriority: Integer; stdcall;
   end;
 
   { IAIMPServiceAudioDecoders }

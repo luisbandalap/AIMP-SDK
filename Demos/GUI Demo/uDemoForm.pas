@@ -153,7 +153,8 @@ begin
   // Create the Button
   CheckResult(FService.CreateControl(FForm, APanel, MakeString('B1'),
     TAIMPUINotifyEventAdapter.Create(HandlerCloseButton), IID_IAIMPUIButton, AButton));
-  CheckResult(AButton.SetPlacement(TAIMPUIControlPlacement.Create(ualRight, 96)));
+  CheckResult(AButton.SetPlacement(TAIMPUIControlPlacement.Create(ualRight, 0)));
+  CheckResult(AButton.SetPlacementConstraints(TAIMPUIControlPlacementConstraints.Create(100, 25, 100, 25)));
 end;
 
 procedure TDemoForm.CreateLog(AParent: IAIMPUIWinControl);
@@ -318,6 +319,7 @@ procedure TDemoForm.CreateGraphics(AParent: IAIMPUIWinControl);
     AImageSize: TSize;
   begin
     CoreCreateObject(IAIMPImage2, AImage);
+    AImage.LoadFromFile(MakeString('B:\asdadasdas'));
     CheckResult(AImage.LoadFromResource(HInstance, PWideChar(ResName), 'PNG'));
     CheckResult(AImage.GetSize(AImageSize));
     CheckResult(FService.CreateControl(FForm, AParent, nil, Self, IAIMPUIImage, Result));
@@ -387,7 +389,7 @@ begin
   CheckResult(AControl.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 200)));
   CheckResult(AControl.SetValueAsInt32(AIMPUI_GROUPBOX_PROPID_AUTOSIZE, 1));
 
-  // Create the CheckBoxes and place in at GroupBox
+  // Create the CheckBoxes and place them at GroupBox
   CheckResult(FService.CreateControl(FForm, AControl, MakeString('cbItem1'), Self, IID_IAIMPUICheckBox, AChildControl));
   CheckResult(AChildControl.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 0)));
   CheckResult(FService.CreateControl(FForm, AControl, MakeString('cbItem2'), Self, IID_IAIMPUICheckBox, AChildControl));
@@ -404,7 +406,7 @@ begin
   CheckResult(AControl.SetValueAsInt32(AIMPUI_GROUPBOX_PROPID_AUTOSIZE, 1));
   CheckResult(AControl.SetValueAsInt32(AIMPUI_GROUPBOX_PROPID_CHECKMODE, 2));
 
-  // Create the RadioBoxes and place in at GroupBox
+  // Create the RadioBoxes and place them at GroupBox
   CheckResult(FService.CreateControl(FForm, AControl, MakeString('rbItem1'), Self, IID_IAIMPUIRadioBox, AChildControl));
   CheckResult(AChildControl.SetPlacement(TAIMPUIControlPlacement.Create(ualTop, 0)));
   CheckResult(FService.CreateControl(FForm, AControl, MakeString('rbItem2'), Self, IID_IAIMPUIRadioBox, AChildControl));

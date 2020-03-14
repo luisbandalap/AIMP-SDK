@@ -56,7 +56,7 @@ const
   SID_IAIMPPlaylistPreimageListener = '{41494D50-536D-504C-4D6E-677200000000}';
   IID_IAIMPPlaylistPreimageListener: TGUID = SID_IAIMPPlaylistPreimageListener;
 
-  SID_IAIMPPlaylistPreimageDataProvider = '{41494D50-536D-506C-7344-617461000000}';
+  SID_IAIMPPlaylistPreimageDataProvider = '{41494D50-536D-506C-7344-617461507276}';
   IID_IAIMPPlaylistPreimageDataProvider: TGUID = SID_IAIMPPlaylistPreimageDataProvider;
 
   SID_IAIMPPlaylistPreimageFolders = '{41494D50-536D-504C-5372-63466C647273}';

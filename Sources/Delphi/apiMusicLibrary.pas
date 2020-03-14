@@ -1,10 +1,10 @@
 {************************************************}
 {*                                              *}
 {*          AIMP Programming Interface          *}
-{*               v4.50 build 2000               *}
+{*               v4.60 build 2160               *}
 {*                                              *}
 {*                Artem Izmaylov                *}
-{*                (C) 2006-2017                 *}
+{*                (C) 2006-2019                 *}
 {*                 www.aimp.ru                  *}
 {*                                              *}
 {*            Mail: support@aimp.ru             *}
@@ -32,6 +32,9 @@ const
 
   SID_IAIMPMLDataProvider = '{41494D50-4D4C-4461-7461-507276000000}';
   IID_IAIMPMLDataProvider: TGUID = SID_IAIMPMLDataProvider;
+
+  SID_IAIMPMLDataProvider2 = '{41494D50-4D4C-4461-7461-507276320000}';
+  IID_IAIMPMLDataProvider2: TGUID = SID_IAIMPMLDataProvider2;
 
   SID_IAIMPMLDataProviderSelection = '{41494D50-4D4C-4461-7461-50727653656C}';
   IID_IAIMPMLDataProviderSelection: TGUID = SID_IAIMPMLDataProviderSelection;
@@ -108,8 +111,14 @@ const
   SID_IAIMPMLDataStorage = '{41494D50-4D4C-4461-7461-537467000000}';
   IID_IAIMPMLDataStorage: TGUID = SID_IAIMPMLDataStorage;
 
+  SID_IAIMPMLDataStorage2 = '{41494D50-4D4C-4461-7461-537467320000}';
+  IID_IAIMPMLDataStorage2: TGUID = SID_IAIMPMLDataStorage2;
+
   SID_IAIMPMLSortDirection = '{41494D50-4D4C-536F-7274-446972746E00}';
   IID_IAIMPMLSortDirection: TGUID = SID_IAIMPMLSortDirection;
+
+  SID_IAIMPMLAlbumArtProvider = '{41494D50-4D4C-416C-6241-727450727600}';
+  IID_IAIMPMLAlbumArtProvider: TGUID = SID_IAIMPMLAlbumArtProvider;
 
   // Property ID for IAIMPPropertyList of IAIMPMLExtensionDataStorage and IAIMPMLDataStorage
   AIMPML_DATASTORAGE_PROPID_ID              = 0;
@@ -118,11 +127,12 @@ const
   AIMPML_DATASTORAGE_PROPID_GROUPINGPRESET  = 20;
 
   // List of known Capabilities for AIMPML_DATASTORAGE_PROPID_CAPABILITIES
-  AIMPML_DATASTORAGE_CAP_FILTERING          = 1; // return it, if plugin has own implementation of data filtering
+  AIMPML_DATASTORAGE_CAP_FILTERING          = 1; // plugin has own data filtering implementation
   AIMPML_DATASTORAGE_CAP_PREIMAGES          = 2;
   AIMPML_DATASTORAGE_CAP_GROUPINGPRESETS    = 4;
   AIMPML_DATASTORAGE_CAP_CUSTOMIZEGROUPS    = 8;
   AIMPML_DATASTORAGE_CAP_AUTOEXPANDFILES    = 16;
+  AIMPML_DATASTORAGE_CAP_NOBOOKMARKS        = 32;
 
   // Schema Flags for IAIMPMLExtensionDataStorage.GetFields
   AIMPML_FIELDS_SCHEMA_ALL                        = 0;
@@ -181,8 +191,8 @@ const
   AIMPML_RESERVED_FIELD_ID       = 'ID';       // !REQUIRED! unique record id (Int32, Int64 or String)
   AIMPML_RESERVED_FIELD_FILENAME = 'FileName'; // !REQUIRED! string
   AIMPML_RESERVED_FIELD_FILESIZE = 'FileSize'; // Int64, in bytes
-  AIMPML_RESERVED_FIELD_DURATION = 'Duration'; // double, in seconds
-  AIMPML_RESERVED_FIELD_USERMARK = 'UserMark'; // integer, 0.0 .. 5.0
+  AIMPML_RESERVED_FIELD_DURATION = 'Duration'; // Float, in seconds
+  AIMPML_RESERVED_FIELD_USERMARK = 'UserMark'; // Int32, 0.0 .. 5.0
 
   // Property ID for IAIMPMLDataFieldFilter
   AIMPML_FIELDFILTER_FIELD     = 1;
@@ -238,6 +248,43 @@ const
   AIMPML_GETFILES_FLAGS_ALL      = 0;
   AIMPML_GETFILES_FLAGS_SELECTED = 1;
   AIMPML_GETFILES_FLAGS_FOCUSED  = 2;
+
+  // LocalDataStorage
+  AIMPML_LOCALDATASTORAGE_ID = 'TAIMPMLLocalDataStorage';
+
+  AIMPML_LOCALDATASTORAGE_FIELD_ID = 'ID'; // Int32
+  AIMPML_LOCALDATASTORAGE_FIELD_ADDDED = 'Added'; // DateTime (Float);
+  AIMPML_LOCALDATASTORAGE_FIELD_ALBUM = 'Album'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_ALBUMARTIST = 'AlbumArtist'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_ARTIST = 'Artist'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_BITDEPTH = 'BitDepth'; // Int32;
+  AIMPML_LOCALDATASTORAGE_FIELD_BITRATE = 'Bitrate'; // Int32
+  AIMPML_LOCALDATASTORAGE_FIELD_BPM = 'BPM'; // Int32;
+  AIMPML_LOCALDATASTORAGE_FIELD_CHANNELS = 'Channels'; // Int32;
+  AIMPML_LOCALDATASTORAGE_FIELD_COMMENT = 'Comment'; // String (Memo)
+  AIMPML_LOCALDATASTORAGE_FIELD_COMPOSER = 'Composer'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_CONDUCTOR = 'Conductor'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_COPYRIGHTS = 'Copyrights'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_DISKNUMBER = 'DiskNumber'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_DURATION = AIMPML_RESERVED_FIELD_DURATION; // Duration (Float)
+  AIMPML_LOCALDATASTORAGE_FIELD_FILEFORMAT = 'FileFormat'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_FILENAME = AIMPML_RESERVED_FIELD_FILENAME; // FileName (String);
+  AIMPML_LOCALDATASTORAGE_FIELD_FILESIZE = AIMPML_RESERVED_FIELD_FILESIZE; // FileSize (Int64);
+  AIMPML_LOCALDATASTORAGE_FIELD_GENRE = 'Genre'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_LABELS = 'Labels'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_LASTMODIFICATION = 'LastModification'; // DateTime (Float)
+  AIMPML_LOCALDATASTORAGE_FIELD_LASTPLAYBACK = 'LastPlayback'; // DateTime (Float);
+  AIMPML_LOCALDATASTORAGE_FIELD_LYRICIST = 'Lyricist'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_MOOD = 'Mood'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_PLAYBACKCOUNT = 'PlaybackCount'; // Int32
+  AIMPML_LOCALDATASTORAGE_FIELD_PUBLISHER = 'Publisher'; // String, multiple values
+  AIMPML_LOCALDATASTORAGE_FIELD_RATING = 'Rating'; // Int32
+  AIMPML_LOCALDATASTORAGE_FIELD_SAMPLERATE = 'SampleRate'; // Int32
+  AIMPML_LOCALDATASTORAGE_FIELD_TITLE = 'Title'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_TRACKNUMBER = 'TrackNumber'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_URL = 'URL'; // String
+  AIMPML_LOCALDATASTORAGE_FIELD_USERMARK = AIMPML_RESERVED_FIELD_USERMARK;
+  AIMPML_LOCALDATASTORAGE_FIELD_YEAR = 'Year'; // String
 
 type
 
@@ -396,11 +443,27 @@ type
 // Data Providers
 //----------------------------------------------------------------------------------------------------------------------
 
+  { IAIMPMLAlbumArtProvider }
+
+  IAIMPMLAlbumArtProvider = interface
+  [SID_IAIMPMLAlbumArtProvider]
+    function Get(Fields: IAIMPObjectList; Values: POleVariant;
+      Options: IAIMPPropertyList; out Image: IAIMPImageContainer): HRESULT; stdcall;
+  end;
+
   { IAIMPMLDataProvider }
 
   IAIMPMLDataProvider = interface
   [SID_IAIMPMLDataProvider]
     function GetData(Fields: IAIMPObjectList; Filter: IAIMPMLDataFilter; out Data: IUnknown): HRESULT; stdcall;
+  end;
+
+  { IAIMPMLDataProvider2 }
+
+  IAIMPMLDataProvider2 = interface
+ 	[SID_IAIMPMLDataProvider2]
+    function GetData(Fields: IAIMPObjectList; Filter: IAIMPMLDataFilter;
+      Reserved: IUnknown; var PageID: IUnknown; out Data: IUnknown): HRESULT; stdcall;
   end;
 
   { IAIMPMLDataProviderSelection }
@@ -412,7 +475,8 @@ type
     function GetValueAsInt64(FieldIndex: Integer): Int64; stdcall;
     function GetValueAsString(FieldIndex: Integer; out Length: Integer): PWideChar; stdcall;
     function NextRow: LongBool; stdcall;
-    function HasNextPage: LongBool; stdcall;
+    // Deprecated, use IAIMPMLDataProvider2 instead
+    // function HasNextPage: LongBool; stdcall;
   end;
 
   { IAIMPMLGroupingTreeSelection }
@@ -489,8 +553,17 @@ type
     procedure Changed; stdcall;
   end;
 
+  { IAIMPMLDataStorage }
+
   IAIMPMLDataStorage = interface(IAIMPPropertyList) // + IAIMPMLGroupingPresets
   [SID_IAIMPMLDataStorage]
+  end;
+
+  { IAIMPMLDataStorage2 }
+
+  IAIMPMLDataStorage2 = interface(IAIMPMLDataStorage) // + IAIMPMLDataProvider, IAIMPMLDataProvider2
+  [SID_IAIMPMLDataStorage2]
+    function CreateObject(const IID: TGUID; out Obj): HRESULT; stdcall;
   end;
 
 //----------------------------------------------------------------------------------------------------------------------

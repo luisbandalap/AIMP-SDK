@@ -1,10 +1,10 @@
 {************************************************}
 {*                                              *}
 {*          AIMP Programming Interface          *}
-{*               v4.50 build 2000               *}
+{*               v4.60 build 2100               *}
 {*                                              *}
 {*                Artem Izmaylov                *}
-{*                (C) 2006-2017                 *}
+{*                (C) 2006-2018                 *}
 {*                 www.aimp.ru                  *}
 {*            Mail: support@aimp.ru             *}
 {*                                              *}
@@ -17,7 +17,7 @@ unit apiTagEditor;
 interface
 
 uses
-  apiObjects, apiFileManager;
+  apiObjects, apiFileManager, apiThreading;
 
 const
   SID_IAIMPFileTag = '{41494D50-4669-6C65-5461-670000000000}';
@@ -28,6 +28,12 @@ const
 
   SID_IAIMPServiceFileTagEditor = '{41494D50-5372-7654-6167-456469740000}';
   IID_IAIMPServiceFileTagEditor: TGUID = SID_IAIMPServiceFileTagEditor;
+
+  SID_IAIMPExtensionTagsProvider = '{41494D50-4578-7446-696E-645461677300}';
+  IID_IAIMPExtensionTagsProvider: TGUID = SID_IAIMPExtensionTagsProvider;
+
+  SID_IAIMPServiceFindTagsOnline = '{41494D50-5372-7646-696E-645461677300}';
+  IID_IAIMPServiceFindTagsOnline: TGUID = SID_IAIMPServiceFindTagsOnline;
 
   // PropertyID for the IAIMPFileTag
   AIMP_FILETAG_PROPID_BASE             = 100;
@@ -62,6 +68,27 @@ type
     function SetToAll(Info: IAIMPFileInfo): HRESULT; stdcall;
     // Save
     function Save: HRESULT; stdcall;
+  end;
+
+  { IAIMPExtensionTagsProvider }
+
+  TAIMPServiceFindTagsOnlineAlbumInfoReceiveProc = procedure (AlbumInfo: IAIMPFileInfo; Data: Pointer); stdcall;
+
+  IAIMPExtensionTagsProvider = interface
+  [SID_IAIMPExtensionTagsProvider]
+    // Info
+    function GetName(out S: IAIMPString): HRESULT; stdcall;
+    function GetSupportedFields(Fields: PInteger; var Count: Integer): HRESULT; stdcall;
+    // Commands
+    function FindAlbums(Query: IAIMPString; Owner: IAIMPTaskOwner;
+      ReceiveProc: TAIMPServiceFindTagsOnlineAlbumInfoReceiveProc; ReceiveProcData: Pointer): HRESULT; stdcall;
+    function FindTracks(AlbumInfo: IAIMPFileInfo; Owner: IAIMPTaskOwner; out TracksInfo: IAIMPObjectList): HRESULT; stdcall;
+  end;
+
+  { IAIMPServiceFindTagsOnline }
+
+  IAIMPServiceFindTagsOnline = interface
+  [SID_IAIMPServiceFindTagsOnline]
   end;
 
   { IAIMPServiceFileTagEditor }
