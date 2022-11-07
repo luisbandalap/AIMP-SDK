@@ -1,13 +1,12 @@
 /************************************************/
 /*                                              */
 /*          AIMP Programming Interface          */
-/*               v4.60 build 2160               */
+/*               v5.02 build 2360               */
 /*                                              */
 /*                Artem Izmaylov                */
-/*                (C) 2006-2019                 */
+/*                (C) 2006-2022                 */
 /*                 www.aimp.ru                  */
-/*                                              */
-/*            Mail: support@aimp.ru             */
+/*               support@aimp.ru                */
 /*                                              */
 /************************************************/
 
@@ -132,6 +131,7 @@ const int AIMP_PLAYLIST_NOTIFY_PREIMAGE       = 512;
 const int AIMP_PLAYLIST_NOTIFY_MODIFIED       = 1024;
 const int AIMP_PLAYLIST_NOTIFY_DEADSTATE      = 2048;
 const int AIMP_PLAYLIST_NOTIFY_MAKEVISIBLE    = 4096;
+const int AIMP_PLAYLIST_NOTIFY_PLAYBACKQUEUE  = 8192;
 
 // Properties IDS for IAIMPPlaylistPreimage
 const int AIMP_PLAYLISTPREIMAGE_PROPID_FACTORYID = 1;
@@ -147,9 +147,9 @@ const int AIMP_PLAYLISTPREIMAGE_PLAYLISTBASED_PROPID_URI = 100;
 const int AIMP_PREIMAGEFACTORY_FLAG_CONTEXTDEPENDENT = 1;
 
 // Built-in Preimage Factories
-static const WCHAR* AIMP_PREIMAGEFACTORY_FOLDERS_ID = _T("TAIMPPlaylistFoldersPreimage");
-static const WCHAR* AIMP_PREIMAGEFACTORY_MUSICLIBRARY_ID = _T("TAIMPMLPlaylistPreimage");
-static const WCHAR* AIMP_PREIMAGEFACTORY_PLAYLIST_ID = _T("TAIMPPlaylistBasedPreimage");
+static const WCHAR* AIMP_PREIMAGEFACTORY_FOLDERS_ID = L"TAIMPPlaylistFoldersPreimage";
+static const WCHAR* AIMP_PREIMAGEFACTORY_MUSICLIBRARY_ID = L"TAIMPMLPlaylistPreimage";
+static const WCHAR* AIMP_PREIMAGEFACTORY_PLAYLIST_ID = L"TAIMPPlaylistBasedPreimage";
 
 /* IAIMPPlaylistItem */
 
@@ -353,7 +353,7 @@ class IAIMPServicePlaylistManager: public IUnknown
     	virtual HRESULT WINAPI SetActivePlaylist(IAIMPPlaylist* Playlist) = 0;
 
 		// Playable Playlist
-    	virtual HRESULT WINAPI GetPlayablePlaylist(IAIMPPlaylist **Playlist) = 0;
+    	virtual HRESULT WINAPI GetPlayingPlaylist(IAIMPPlaylist **Playlist) = 0;
 
 		// Loaded Playlists
 		virtual HRESULT WINAPI GetLoadedPlaylist(int Index, IAIMPPlaylist** Playlist) = 0;

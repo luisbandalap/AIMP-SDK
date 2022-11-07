@@ -1,14 +1,13 @@
-{************************************************}
-{*                                              *}
-{*          AIMP Programming Interface          *}
-{*                Basic Wrappers                *}
-{*                                              *}
-{*                Artem Izmaylov                *}
-{*                (C) 2006-2017                 *}
-{*                 www.aimp.ru                  *}
-{*            Mail: support@aimp.ru             *}
-{*                                              *}
-{************************************************}
+﻿{*********************************************}
+{*                                           *}
+{*        AIMP Programming Interface         *}
+{*                v5.00.2300                 *}
+{*                                           *}
+{*            (c) Artem Izmaylov             *}
+{*                 2006-2021                 *}
+{*                www.aimp.ru                *}
+{*                                           *}
+{*********************************************}
 
 unit apiWrappers;
 
@@ -17,11 +16,11 @@ unit apiWrappers;
 interface
 
 uses
-  Windows, Classes, apiCore, apiObjects, apiFileManager, apiMUI;
+  Windows, SysUtils, Classes, apiCore, apiObjects, apiFileManager, apiMUI;
 
 type
 {$IFNDEF UNICODE}
-  UnicodeString = WideString;
+  UnicodeString = acString;
 {$ENDIF}
 
   { TInterfacedObjectEx }
@@ -200,6 +199,7 @@ procedure CoreCreateObject(const IID: TGUID; out Obj);
 function CoreGetProfilePath: UnicodeString;
 function CoreGetService(const IID: TGUID; out Obj): LongBool;
 function CoreIntf: IAIMPCore;
+function CoreProcessException(const E: Exception; ErrorInfo: IAIMPErrorInfo): HRESULT;
 
 // Window Handles
 function MainWindowGetHandle: HWND;
@@ -220,6 +220,7 @@ function MakeString(const S: PWideChar; ALength: Integer; out R: IAIMPString): H
 function MakeString(const S: UnicodeString): IAIMPString; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
 function MakeString(const S: UnicodeString; out R: IAIMPString): HRESULT; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
 
+function PropListGetBool(const List: IAIMPPropertyList; ID: Integer; const ADefault: LongBool = False): LongBool;
 function PropListGetFloat(const List: IAIMPPropertyList; ID: Integer; const ADefault: Double = 0): Double;
 function PropListGetInt32(const List: IAIMPPropertyList; ID: Integer; ADefault: Integer = 0): Integer; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
 function PropListGetInt64(const List: IAIMPPropertyList; ID: Integer; const ADefault: Int64 = 0): Int64;
@@ -227,6 +228,7 @@ function PropListGetObj(const List: IAIMPPropertyList; ID: Integer): IUnknown;
 function PropListGetStr(const List: IAIMPPropertyList; ID: Integer): UnicodeString; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
 function PropListGetStr(const List: IAIMPPropertyList; ID: Integer; out S: IAIMPString): LongBool; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
 function PropListGetStr(const List: IAIMPPropertyList; ID: Integer; out S: UnicodeString): LongBool; overload; {$IFDEF DELPHI2010}inline;{$ENDIF}
+procedure PropListSetBool(const List: IAIMPPropertyList; ID: Integer; const Value: LongBool);
 procedure PropListSetFloat(const List: IAIMPPropertyList; ID: Integer; const Value: Double);
 procedure PropListSetInt32(const List: IAIMPPropertyList; ID: Integer; const Value: Integer);
 procedure PropListSetInt64(const List: IAIMPPropertyList; ID: Integer; const Value: Int64);
@@ -241,12 +243,12 @@ function MessageDispatcherSetPropValue(PropertyID: Integer; ValueBuffer: Pointer
 implementation
 
 uses
-  SysUtils, apiMessages;
+  apiMessages;
 
 const
   sErrorCannotCreateObject = 'Cannot create object (%d)';
   sErrorCannotSetDataToString = 'Cannot set data to IAIMPString (%d)';
-  sErrroNoCore = 'Plugin is not initialized';
+  sErrorNoCore = 'Plugin was not initialized';
 
 var
   FCore: IAIMPCore = nil;
@@ -263,21 +265,19 @@ end;
 
 procedure CoreCreateObject(const IID: TGUID; out Obj);
 begin
-  CheckResult(FCore.CreateObject(IID, Obj), sErrorCannotCreateObject);
+  CheckResult(CoreIntf.CreateObject(IID, Obj), sErrorCannotCreateObject);
 end;
 
 function CoreCreateObjectEx(const IID: TGUID; out Obj): HRESULT;
 begin
-  if FCore = nil then
-    raise Exception.Create(sErrroNoCore);
-  Result := FCore.CreateObject(IID, Obj);
+  Result := CoreIntf.CreateObject(IID, Obj);
 end;
 
 function CoreGetProfilePath: UnicodeString;
 var
   S: IAIMPString;
 begin
-  if Failed(FCore.GetPath(AIMP_CORE_PATH_PROFILE, S)) then
+  if Failed(CoreIntf.GetPath(AIMP_CORE_PATH_PROFILE, S)) then
     raise Exception.Create('Profile path is not found');
   Result := IAIMPStringToString(S);
 end;
@@ -290,6 +290,17 @@ end;
 function CoreIntf: IAIMPCore;
 begin
   Result := FCore;
+  if Result = nil then
+    raise Exception.Create(sErrorNoCore);
+end;
+
+function CoreProcessException(const E: Exception; ErrorInfo: IAIMPErrorInfo): HRESULT;
+begin
+  if E is EAbort then
+    Exit(E_FAIL);
+  if ErrorInfo <> nil then
+    ErrorInfo.SetInfo(-1, MakeString(E.Message), nil);
+  Result := E_UNEXPECTED;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -339,12 +350,14 @@ end;
 
 function LangLoadStringEx(const KeyPath: UnicodeString): IAIMPString;
 begin
-  CheckResult(LangLoadString(KeyPath, Result));
+  if Failed(LangLoadString(KeyPath, Result)) then
+    Result := MakeString('');
 end;
 
 function LangLoadStringEx(const KeyPath: UnicodeString; APartIndex: Integer): IAIMPString;
 begin
-  CheckResult(LangLoadString(KeyPath, APartIndex, Result));
+  if Failed(LangLoadString(KeyPath, APartIndex, Result)) then
+    Result := MakeString('');
 end;
 
 function LangLoadString(const KeyPath: UnicodeString; APartIndex: Integer): UnicodeString;
@@ -410,6 +423,16 @@ begin
   end;
 end;
 
+function PropListGetBool(const List: IAIMPPropertyList; ID: Integer; const ADefault: LongBool): LongBool;
+var
+  AValue: Integer;
+begin
+  if Succeeded(List.GetValueAsInt32(ID, AValue)) then
+    Result := AValue <> 0
+  else
+    Result := ADefault;
+end;
+
 function PropListGetFloat(const List: IAIMPPropertyList; ID: Integer; const ADefault: Double = 0): Double;
 begin
   if Failed(List.GetValueAsFloat(ID, Result)) then
@@ -452,6 +475,11 @@ begin
   Result := PropListGetStr(List, ID, AStrIntf);
   if Result then
     S := IAIMPStringToString(AStrIntf);
+end;
+
+procedure PropListSetBool(const List: IAIMPPropertyList; ID: Integer; const Value: LongBool);
+begin
+  PropListSetInt32(List, ID, Ord(Value));
 end;
 
 procedure PropListSetFloat(const List: IAIMPPropertyList; ID: Integer; const Value: Double);

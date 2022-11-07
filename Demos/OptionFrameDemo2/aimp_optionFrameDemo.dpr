@@ -1,15 +1,16 @@
-﻿library MenuAndActionsDemo;
+﻿library aimp_optionFrameDemo;
 
 uses
+  Windows,
   apiPlugin,
-  MenuAndActionsDemoUnit in 'MenuAndActionsDemoUnit.pas';
+  uOptionFrameDemo in 'uOptionFrameDemo.pas';
 
 {$R *.res}
 
 function AIMPPluginGetHeader(out Header: IAIMPPlugin): HRESULT; stdcall;
 begin
   try
-    Header := TAIMPMenuAndActionsPlugin.Create;
+    Header := TAIMPDemoPlugin.Create;
     Result := S_OK;
   except
     Result := E_UNEXPECTED;
